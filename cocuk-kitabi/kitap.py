@@ -80,7 +80,7 @@ def zeytin_head(a, uid, transform, sw=1.0):
     a('</g>')
 
 
-def shuttle_side(a, transform, uid='s'):
+def shuttle_side(a, transform, uid='s', head_rot=0):
     """Side view of Zeytin's shuttle with a big round window, nose to the right."""
     a(f'<g transform="{transform}">')
     for y0, s in ((-22, 1), (0, 1.3), (22, 1)):
@@ -99,7 +99,109 @@ def shuttle_side(a, transform, uid='s'):
     a(f'<defs><clipPath id="w{uid}"><circle cx="450" cy="-5" r="46"/></clipPath></defs>')
     a(f'<circle cx="450" cy="-5" r="54" fill="#fff" {S} stroke-width="5"/>')
     a(f'<g clip-path="url(#w{uid})">')
-    zeytin_head(a, uid, 'translate(450,10) scale(0.27)', sw=2.2)
+    zeytin_head(a, uid, f'translate(450,-5) rotate({head_rot}) translate(0,15) scale(0.27)', sw=2.2)
     a('</g>')
     a(f'<circle cx="450" cy="-5" r="46" fill="none" {S} stroke-width="3.5"/>')
     a('</g>')
+
+
+# ---------------------------------------------------------------- globes ----
+
+_LAND = None
+
+
+def _land():
+    global _LAND
+    if _LAND is None:
+        import json, os
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'veri', 'ne_110m_land.geojson')
+        rings = []
+        for f in json.load(open(path))['features']:
+            g = f['geometry']
+            polys = g['coordinates'] if g['type'] == 'MultiPolygon' else [g['coordinates']]
+            for poly in polys:
+                rings.append(poly[0])
+        _LAND = rings
+    return _LAND
+
+
+def ortho(lat0, lon0):
+    """Orthographic projection; returns f(lat, lon, alt=1) -> (x, y, visible) on a unit disk, y down."""
+    p0, l0 = math.radians(lat0), math.radians(lon0)
+    def f(lat, lon, alt=1.0):
+        p, l = math.radians(lat), math.radians(lon)
+        cosc = math.sin(p0)*math.sin(p) + math.cos(p0)*math.cos(p)*math.cos(l-l0)
+        x = math.cos(p)*math.sin(l-l0)
+        y = math.cos(p0)*math.sin(p) - math.sin(p0)*math.cos(p)*math.cos(l-l0)
+        return alt*x, -alt*y, cosc > 0
+    return f
+
+
+def earth(a, uid, cx, cy, R, lat0, lon0, sw=1.0):
+    """Earth with real (Natural Earth 1:110m) coastlines. Returns the projection."""
+    pr = ortho(lat0, lon0)
+    a(f'<defs><clipPath id="e{uid}"><circle cx="{cx}" cy="{cy}" r="{R}"/></clipPath></defs>')
+    a(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="#fff" {S} stroke-width="{5*sw:.2f}"/>')
+    a(f'<g clip-path="url(#e{uid})">')
+    for ring in _land():
+        pts, vis = [], 0
+        for lon, lat in ring:
+            x, y, v = pr(lat, lon)
+            if not v:  # push hidden points onto the limb
+                n = math.hypot(x, y) or 1
+                x, y = x/n, y/n
+            vis += v
+            pts.append(f'{cx+R*x:.1f},{cy+R*y:.1f}')
+        if vis:
+            a(f'<polygon points="{" ".join(pts)}" fill="#fff" {S} stroke-width="{3*sw:.2f}"/>')
+    a('</g>')
+    a(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" {S} stroke-width="{5*sw:.2f}"/>')
+    return pr
+
+
+def projected_line(pr, cx, cy, R, pts, alt=1.0):
+    """Polyline of (lat, lon) points on the globe, only the visible runs."""
+    runs, cur = [], []
+    for lat, lon in pts:
+        x, y, v = pr(lat, lon, alt)
+        if v:
+            cur.append(f'{cx+R*x:.1f},{cy+R*y:.1f}')
+        elif cur:
+            runs.append(cur); cur = []
+    if cur:
+        runs.append(cur)
+    return runs
+
+
+# ----------------------------------------------------------------- pages ----
+
+W, H = 850, 1100
+
+
+def svg_open():
+    o = []
+    o.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">')
+    o.append(f'<rect width="{W}" height="{H}" fill="#fff"/>')
+    return o
+
+
+def story_block(a, title, story, badge=None, top=705):
+    """Outlined (colourable) title plus the readable story text under a scene."""
+    import textwrap
+    a(f'<text x="{W/2}" y="{top}" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="40" fill="#fff" stroke="#000" stroke-width="2.2" stroke-linejoin="round">{title}</text>')
+    y = top + 52
+    for para in story:
+        for line in textwrap.wrap(para, 60):
+            a(f'<text x="{W/2}" y="{y}" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">{line}</text>')
+            y += 31
+        y += 8
+    if badge:  # mission tag in the top-left corner
+        bw = 24 + 10.5 * len(badge)
+        a(f'<rect x="40" y="28" width="{bw:.0f}" height="36" rx="18" fill="#fff" {S} stroke-width="3"/>')
+        a(f'<text x="{40+bw/2:.0f}" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">{badge}</text>')
+    assert y < H - 38, f'story too long ({y})'
+
+
+def save(o, path):
+    o.append('</svg>')
+    open(path, 'w').write('\n'.join(o))
