@@ -75,41 +75,33 @@ story_block(a, "Neptune, the Windy World", [
 save(o, 'sayfalar/11-neptun-sag.svg')
 
 # ------------------------------------------------------------- left page ----
-# Triton's south polar cap: nitrogen-ice geysers rise straight up ~8 km, then a
-# steady wind drags them sideways; the dark streaks they leave all point one way.
+# Triton's south polar cap: nitrogen-ice geysers gushing ~8 km straight up;
+# dark streaks of fallen dust lie on the ice.
 o = svg_open(); a = o.append
 neptune(a, 630, 200, 150, sw=1.1, rings=False)
 HY = 520
 a(f'<path d="M -10,{HY} Q 425,{HY - 20} 860,{HY} L 860,1110 L -10,1110 Z" fill="#fff" {S} stroke-width="4.5"/>')
-# two geysers: a thin column rises ~8 km, bends over and streams downwind as a
-# widening cloud; one closed outline with billowy (scalloped) edges
-for gx, gy, top, length, s_ in ((230, 650, 300, 520, 1.0), (590, 590, 390, 200, 0.6)):
-    R_b = 40*s_
-    cl = []                                    # centre line with half-widths
-    for k in range(21):
-        t = k/20
-        cl.append((gx, gy - (gy - top - R_b)*t, (5 + 5*t)*s_))
-    for k in range(1, 13):
-        th = math.pi/2 * k/12
-        cl.append((gx + R_b*(1 - math.cos(th)), top + R_b - R_b*math.sin(th), (10 + 4*k/12)*s_))
-    for k in range(1, 41):
-        t = k/40
-        cl.append((gx + R_b + length*t, top + 14*s_*t, (14 + 34*t)*s_))
+# two geysers gushing straight up: a column that widens as it rises, a billowy
+# head at the top, and spray falling back on both sides
+for gx, gy, top, s_ in ((230, 650, 150, 1.0), (590, 590, 405, 0.6)):
+    n = 40
     left, right = [], []
-    for i, (x, y, w) in enumerate(cl):
-        x0, y0, _ = cl[max(i - 1, 0)]; x1, y1, _ = cl[min(i + 1, len(cl) - 1)]
-        dx, dy = x1 - x0, y1 - y0; n = math.hypot(dx, dy) or 1
-        nx, ny = -dy/n, dx/n
-        bump = 1 + (0.08 if i < 21 else 0.35)*abs(math.sin(i*0.75))
-        left.append((x + nx*w*bump, y + ny*w*bump)); right.append((x - nx*w*bump, y - ny*w*bump))
-    # rounded, billowy cap where the plume thins out downwind
-    ex, ey, ew = cl[-1]
-    cap = [(ex + ew*0.9*math.sin(th)*(1 + 0.2*abs(math.sin(th*5))), ey + ew*math.cos(th)*(1 + 0.2*abs(math.sin(th*5))))
-           for th in (math.pi*k/12 for k in range(1, 12))]
+    for k in range(n + 1):
+        t = k / n
+        y = gy - (gy - top)*t
+        w = (6 + 26*t**1.4)*s_ * (1 + 0.18*abs(math.sin(k*0.9))*t)
+        left.append((gx - w, y)); right.append((gx + w, y))
+    wt = (6 + 26)*s_
+    cap = [(gx - wt*math.cos(th)*(1 + 0.25*abs(math.sin(th*6))), top - wt*0.9*math.sin(th)*(1 + 0.25*abs(math.sin(th*6))))
+           for th in (math.pi*k/14 for k in range(1, 14))]
     pts = left + cap + right[::-1]
     a(f'<polygon points="{" ".join(f"{x:.1f},{y:.1f}" for x, y in pts)}" fill="#fff" {S} stroke-width="2.8"/>')
-    for k in (-1, 1):   # internal streaks along the plume
-        a(f'<path d="M {gx + R_b:.0f},{top + k*4*s_:.0f} Q {gx + R_b + length*0.5:.0f},{top + 8*s_ + k*14*s_:.0f} {gx + R_b + length*0.95:.0f},{top + 14*s_ + k*30*s_:.0f}" fill="none" {S} stroke-width="1.5" stroke-dasharray="7 6"/>')
+    for dx in (-0.4, 0, 0.4):   # streaks rushing upward inside the jet
+        a(f'<line x1="{gx + dx*8*s_:.1f}" y1="{gy - 20*s_:.1f}" x2="{gx + dx*24*s_:.1f}" y2="{top + 20*s_:.1f}" {S} stroke-width="1.5" stroke-dasharray="8 7"/>')
+    for sgn in (-1, 1):         # spray falling back down
+        for j in range(3):
+            x0 = gx + sgn*(wt + 6*s_ + j*14*s_)
+            a(f'<path d="M {x0:.0f},{top + 10*s_:.0f} q {sgn*18*s_:.0f},{40*s_:.0f} {sgn*(24 + j*10)*s_:.0f},{(120 + j*40)*s_:.0f}" fill="none" {S} stroke-width="1.5" stroke-dasharray="3 7"/>')
     a(f'<ellipse cx="{gx}" cy="{gy + 4*s_}" rx="{26*s_}" ry="{8*s_}" fill="#000"/>')
 # dark wind streaks on the ice, all aligned with the wind
 rnd = random.Random(4)
@@ -123,7 +115,7 @@ for k in range(9):
     x = 40 + k*95 + rnd.uniform(-20, 20)
     a(f'<path d="M {x - 26:.0f},{HY + 20} q 26,{rnd.uniform(6, 10):.0f} 52,0" fill="none" {S} stroke-width="1.6"/>')
 zeytin_body(a, 'tr', 'translate(690,1010) scale(0.6)')
-shuttle_side(a, 'translate(60,120) rotate(-4) scale(0.4)', uid='l')
+shuttle_side(a, 'translate(335,445) rotate(-6) scale(0.25)', uid='l')
 for sx, sy, r in ((380, 60, 14), (60, 360, 14), (800, 470, 12)):
     star(a, sx, sy, r)
 save(o, 'sayfalar/11-neptun-sol.svg')
