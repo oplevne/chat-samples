@@ -205,3 +205,199 @@ def story_block(a, title, story, badge=None, top=705):
 def save(o, path):
     o.append('</svg>')
     open(path, 'w').write('\n'.join(o))
+
+
+# ------------------------------------------------------------------ moon ----
+
+# Major near-side craters: (name, selenographic lat, lon, diameter km)
+MOON_CRATERS = [
+    ('Tycho', -43.3, -11.2, 85), ('Copernicus', 9.6, -20.1, 93), ('Kepler', 8.1, -38.0, 31),
+    ('Aristarchus', 23.7, -47.4, 40), ('Plato', 51.6, -9.4, 101), ('Clavius', -58.8, -14.1, 225),
+    ('Grimaldi', -5.2, -68.6, 173), ('Langrenus', -8.9, 61.0, 132), ('Petavius', -25.1, 60.4, 177),
+    ('Theophilus', -11.4, 26.4, 100), ('Cyrillus', -13.2, 24.0, 98), ('Catharina', -18.1, 23.6, 99),
+    ('Ptolemaeus', -9.2, -1.8, 154), ('Alphonsus', -13.4, -2.8, 111), ('Arzachel', -18.2, -1.9, 97),
+    ('Archimedes', 29.7, -4.0, 82), ('Eratosthenes', 14.5, -11.3, 58), ('Posidonius', 31.8, 29.9, 95),
+    ('Schickard', -44.4, -54.6, 206), ('Maginus', -50.0, -6.2, 194), ('Longomontanus', -49.6, -21.7, 145),
+    ('Hipparchus', -5.1, 5.2, 138), ('Albategnius', -11.2, 4.0, 136), ('Endymion', 53.6, 56.5, 123),
+    ('Atlas', 46.7, 44.4, 87), ('Hercules', 46.7, 39.1, 69), ('Gassendi', -17.6, -40.1, 110),
+    ('Bullialdus', -20.7, -22.2, 61), ('Proclus', 16.1, 46.8, 28), ('Aristoteles', 50.2, 17.4, 87),
+    ('Eudoxus', 44.3, 16.3, 67), ('Pythagoras', 63.7, -63.0, 145), ('Furnerius', -36.0, 60.6, 125),
+    ('Stevinus', -32.5, 54.2, 74), ('Piccolomini', -29.7, 32.2, 88), ('Walter', -33.1, 0.7, 128),
+]
+DARK_FLOOR = {'Plato', 'Grimaldi'}
+COMPLEX = {'Tycho', 'Copernicus', 'Theophilus', 'Langrenus', 'Petavius', 'Eratosthenes', 'Aristoteles', 'Bullialdus', 'Gassendi'}
+APOLLO11 = (0.674, 23.473)
+
+_MARIA = None
+_TEX = None
+
+
+def _maria():
+    global _MARIA
+    if _MARIA is None:
+        import json, os
+        _MARIA = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'veri', 'ay_maria.json')))
+    return _MARIA
+
+
+def _dest(lat, lon, dist, bearing):
+    """Point at angular distance `dist` (deg) along `bearing` (deg) from (lat, lon)."""
+    p1, l1, d, b = map(math.radians, (lat, lon, dist, bearing))
+    p2 = math.asin(math.sin(p1)*math.cos(d) + math.cos(p1)*math.sin(d)*math.cos(b))
+    l2 = l1 + math.atan2(math.sin(b)*math.sin(d)*math.cos(p1), math.cos(d) - math.sin(p1)*math.sin(p2))
+    return math.degrees(p2), math.degrees(l2)
+
+
+def _in_maria(lat, lon):
+    inside = False
+    for ring in _maria():
+        for (y1, x1), (y2, x2) in zip(ring, ring[1:]):
+            if (y1 > lat) != (y2 > lat) and lon < x1 + (lat - y1) * (x2 - x1) / (y2 - y1):
+                inside = not inside
+    return inside
+
+
+def _texture_craters(seed=3, n=900):
+    """Representative small craters (not named features): power-law sizes, about
+    twenty times denser on the old highlands than on the younger maria."""
+    import random
+    rnd = random.Random(seed); out = []
+    while len(out) < n:
+        lat = math.degrees(math.asin(rnd.uniform(-1, 1))); lon = rnd.uniform(-95, 95)
+        km = 12 * (1 - rnd.random()) ** (-1 / 1.6)
+        if km > 70:
+            continue
+        if _in_maria(lat, lon) and rnd.random() > 0.05:
+            continue
+        out.append((lat, lon, km))
+    return out
+
+
+def _crater(a, pr, P, lat, lon, km, sw, dark=False, peak=False, w=2.6):
+    rho = km / 2 / 30.3
+    ring = [pr(*_dest(lat, lon, rho, b)) for b in range(0, 360, 12)]
+    a(f'<polygon points="{" ".join(P(x, y) for x, y, _ in ring)}" fill="#fff" {S} stroke-width="{w*sw:.2f}"/>')
+    inner = [pr(*_dest(lat, lon, rho*0.75, b)) for b in range(190, 351, 16)]
+    a(f'<polyline points="{" ".join(P(x, y) for x, y, _ in inner)}" fill="none" {S} stroke-width="{w*0.65*sw:.2f}"/>')
+    if dark:
+        fl = [pr(*_dest(lat, lon, rho*0.7, b)) for b in range(0, 360, 15)]
+        a(f'<polygon points="{" ".join(P(x, y) for x, y, _ in fl)}" fill="#fff" {S} stroke-width="{1.6*sw:.2f}" stroke-dasharray="{4*sw:.1f} {4*sw:.1f}"/>')
+    if peak:
+        pk = [pr(*_dest(lat, lon, rho*0.14, b)) for b in range(0, 360, 60)]
+        a(f'<polygon points="{" ".join(P(x, y) for x, y, _ in pk)}" fill="#fff" {S} stroke-width="{1.5*sw:.2f}"/>')
+
+
+def moon(a, uid, cx, cy, R, lat0=0, lon0=0, sw=1.0, min_km=0, rays=True, texture=True):
+    """Near side of the Moon: maria outlines, real major craters, Tycho's rays,
+    plus representative small craters for texture."""
+    global _TEX
+    pr = ortho(lat0, lon0)
+    P = lambda x, y: f'{cx+R*x:.1f},{cy+R*y:.1f}'
+    a(f'<defs><clipPath id="m{uid}"><circle cx="{cx}" cy="{cy}" r="{R}"/></clipPath></defs>')
+    a(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="#fff" {S} stroke-width="{5*sw:.2f}"/>')
+    a(f'<g clip-path="url(#m{uid})">')
+    for ring in _maria():
+        pts, vis = [], 0
+        for lat, lon in ring:
+            x, y, v = pr(lat, lon)
+            if not v:
+                n = math.hypot(x, y) or 1; x, y = x/n, y/n
+            vis += v; pts.append(P(x, y))
+        if vis:
+            a(f'<polygon points="{" ".join(pts)}" fill="#fff" {S} stroke-width="{3*sw:.2f}"/>')
+    if rays:  # Tycho's bright rays, as fine dashed lines
+        _, tl, tn, _ = MOON_CRATERS[0]
+        for bearing, length in ((15, 75), (40, 40), (75, 30), (110, 25), (160, 18), (200, 20), (250, 35), (290, 45), (330, 38)):
+            pts = []
+            for k in range(2, 41):
+                la, lo = _dest(tl, tn, 1.6 + length*k/40, bearing)
+                x, y, v = pr(la, lo)
+                if v: pts.append(P(x, y))
+            a(f'<polyline points="{" ".join(pts)}" fill="none" {S} stroke-width="{1.6*sw:.2f}" stroke-dasharray="{2*sw:.1f} {7*sw:.1f}"/>')
+    if texture:
+        if _TEX is None:
+            _TEX = _texture_craters()
+        for lat, lon, km in _TEX:
+            if pr(lat, lon)[2] and R * km / 1737 > 2.5:
+                _crater(a, pr, P, lat, lon, km, sw, w=1.8)
+    for name, lat, lon, km in MOON_CRATERS:
+        if km < min_km or not pr(lat, lon)[2]:
+            continue
+        _crater(a, pr, P, lat, lon, km, sw, dark=name in DARK_FLOOR, peak=name in COMPLEX)
+    a('</g>')
+    a(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" {S} stroke-width="{5*sw:.2f}"/>')
+    return pr
+
+
+def zeytin_body(a, uid, transform, wave=True):
+    """Full-body Zeytin in a spacesuit, feet at (0,0), about 300 units tall."""
+    a(f'<g transform="{transform}">')
+    a(f'<rect x="-62" y="-205" width="124" height="112" rx="18" fill="#fff" {S} stroke-width="4"/>')  # backpack
+    for sg in (-1, 1):  # legs + boots
+        a(f'<rect x="{-40 if sg < 0 else 8}" y="-100" width="32" height="88" rx="14" fill="#fff" {S} stroke-width="4"/>')
+        a(f'<path d="M {sg*24-30},-4 Q {sg*24-30},-24 {sg*24},-24 Q {sg*24+30},-24 {sg*24+30},-4 Z" fill="#fff" {S} stroke-width="4"/>')
+    # tail in its own suit sleeve
+    a(f'<path d="M 40,-100 C 90,-100 105,-150 88,-185 C 82,-198 68,-192 72,-180 C 85,-150 70,-125 38,-122" fill="#fff" {S} stroke-width="4"/>')
+    a(f'<rect x="-58" y="-180" width="116" height="96" rx="34" fill="#fff" {S} stroke-width="4.5"/>')  # torso
+    a(f'<rect x="-28" y="-160" width="56" height="34" rx="6" fill="#fff" {S} stroke-width="3"/>')
+    for x in (-14, 0, 14):
+        a(f'<circle cx="{x}" cy="-143" r="5" fill="#fff" {S} stroke-width="2.5"/>')
+    a(f'<path d="M -58,-110 L 58,-110" fill="none" {S} stroke-width="3"/>')
+    # arms: left down, right waving
+    a(f'<path d="M -52,-165 Q -92,-140 -88,-98" fill="none" {S} stroke-width="30"/>')
+    a(f'<path d="M -52,-165 Q -92,-140 -88,-98" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="22"/>')
+    a(f'<circle cx="-88" cy="-92" r="15" fill="#fff" {S} stroke-width="4"/>')
+    if wave:
+        a(f'<path d="M 52,-165 Q 92,-185 100,-235" fill="none" {S} stroke-width="30"/>')
+        a(f'<path d="M 52,-165 Q 92,-185 100,-235" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="22"/>')
+        a(f'<circle cx="101" cy="-242" r="15" fill="#fff" {S} stroke-width="4"/>')
+    # helmet with Zeytin
+    a(f'<defs><clipPath id="hb{uid}"><circle cx="0" cy="-238" r="62"/></clipPath></defs>')
+    a(f'<circle cx="0" cy="-238" r="66" fill="#fff" {S} stroke-width="4.5"/>')
+    a(f'<g clip-path="url(#hb{uid})">')
+    zeytin_head(a, uid, 'translate(0,-225) scale(0.36)', sw=2.0)
+    a('</g>')
+    a(f'<circle cx="0" cy="-238" r="62" fill="none" {S} stroke-width="3"/>')
+    a(f'<ellipse cx="0" cy="-178" rx="50" ry="11" fill="#fff" {S} stroke-width="4"/>')
+    a('</g>')
+
+
+def paw_print(a, x, y, s=1.0, rot=0):
+    a(f'<g transform="translate({x},{y}) rotate({rot}) scale({s})">')
+    a(f'<ellipse cx="0" cy="4" rx="9" ry="7" fill="#fff" {S} stroke-width="2.5"/>')
+    for dx, dy in ((-10, -7), (-3.5, -11), (3.5, -11), (10, -7)):
+        a(f'<ellipse cx="{dx}" cy="{dy}" rx="3.2" ry="4" fill="#fff" {S} stroke-width="2"/>')
+    a('</g>')
+
+
+_BOOT_N = [0]
+
+
+def boot_print(a, x, y, s=1.0, rot=0, ribs=9):
+    """Apollo overshoe print: wide toe, narrow waist, straight cross ribs."""
+    _BOOT_N[0] += 1
+    cid = f'bp{_BOOT_N[0]}'
+    sole = ('M 0,-40 C 19,-40 23,-24 21,-10 C 19,4 14,14 15,27 C 16,41 -16,41 -15,27 '
+            'C -14,14 -19,4 -21,-10 C -23,-24 -19,-40 0,-40 Z')
+    a(f'<g transform="translate({x},{y}) rotate({rot}) scale({s})">')
+    a(f'<defs><clipPath id="{cid}"><path d="{sole}"/></clipPath></defs>')
+    a(f'<path d="{sole}" fill="#fff" {S} stroke-width="{2.5/max(s,0.4):.2f}"/>')
+    a(f'<g clip-path="url(#{cid})">')
+    for k in range(ribs):
+        yy = -34 + k * 70 / (ribs - 1)
+        a(f'<line x1="-25" y1="{yy:.1f}" x2="25" y2="{yy:.1f}" {S} stroke-width="{1.6/max(s,0.4):.2f}"/>')
+    a('</g></g>')
+
+
+def rock(a, x, y, r, seed=0, sw=3):
+    """Irregular angular rock sitting on the ground at (x, y)."""
+    import random
+    rnd = random.Random(seed)
+    pts = [(x - r, y)]
+    for k in range(1, 6):
+        t = math.pi * k / 6
+        rr = r * rnd.uniform(0.6, 1.0)
+        pts.append((x - r*math.cos(t)*rnd.uniform(0.85, 1.05), y - rr*math.sin(t)*0.75))
+    pts.append((x + r, y))
+    a(f'<polygon points="{" ".join(f"{px:.1f},{py:.1f}" for px, py in pts)}" fill="#fff" {S} stroke-width="{sw}"/>')
+    a(f'<path d="M {x - r*0.2:.1f},{y - r*0.5:.1f} L {x + r*0.3:.1f},{y - r*0.15:.1f}" fill="none" {S} stroke-width="{sw*0.6:.1f}"/>')
