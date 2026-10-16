@@ -389,6 +389,6 @@
 <text x="425.0" y="889" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">around them.</text>
 <text x="425.0" y="928" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">Above the spots, magnetic loops of hot plasma arch into</text>
 <text x="425.0" y="959" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">space, so tall that many Earths could fit beneath them!</text>
-<rect x="40" y="28" width="286" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
-<text x="183" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">150 million km from Earth</text>
+<rect x="40" y="28" width="310" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
+<text x="195" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">150 million km from Earth</text>
 </svg>

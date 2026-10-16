@@ -119,6 +119,6 @@
 <text x="425.0" y="858" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">followed by 42 years of darkness.</text>
 <text x="425.0" y="897" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">Methane gas makes it blue-green, and it holds the record for</text>
 <text x="425.0" y="928" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">the coldest air of any planet: about −224°C.</text>
-<rect x="40" y="28" width="308" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
-<text x="194" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">2.9 billion km from the Sun</text>
+<rect x="40" y="28" width="332" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
+<text x="206" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">2.9 billion km from the Sun</text>
 </svg>

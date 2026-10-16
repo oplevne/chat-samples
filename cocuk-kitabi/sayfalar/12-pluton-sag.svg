@@ -174,6 +174,6 @@
 <text x="425.0" y="897" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">Its moon Charon is half as wide as Pluto, so the two spin</text>
 <text x="425.0" y="928" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">around a point in space between them, like dancers holding</text>
 <text x="425.0" y="959" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">hands.</text>
-<rect x="40" y="28" width="308" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
-<text x="194" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">5.9 billion km from the Sun</text>
+<rect x="40" y="28" width="332" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
+<text x="206" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">5.9 billion km from the Sun</text>
 </svg>

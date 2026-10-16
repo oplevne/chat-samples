@@ -2235,6 +2235,6 @@
 <text x="425.0" y="889" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">single one.</text>
 <text x="425.0" y="928" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">The biggest, Ceres, is a dwarf planet about 940 kilometers</text>
 <text x="425.0" y="959" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">wide, with bright salty spots in a crater called Occator.</text>
-<rect x="40" y="28" width="350" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
-<text x="215" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">330–480 million km from the Sun</text>
+<rect x="40" y="28" width="377" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
+<text x="229" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">330–480 million km from the Sun</text>
 </svg>

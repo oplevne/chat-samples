@@ -172,6 +172,6 @@
 <text x="425.0" y="927" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">their bond like a sparkling ribbon.</text>
 <text x="425.0" y="966" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">Where the ribbon touches Jupiter's poles, glowing auroras</text>
 <text x="425.0" y="997" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">light up — the shining footprints of Io's dance!</text>
-<rect x="40" y="28" width="308" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
-<text x="194" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">778 million km from the Sun</text>
+<rect x="40" y="28" width="332" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
+<text x="206" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">778 million km from the Sun</text>
 </svg>

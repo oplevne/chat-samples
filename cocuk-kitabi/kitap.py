@@ -196,7 +196,7 @@ def story_block(a, title, story, badge=None, top=705):
             y += 31
         y += 8
     if badge:  # mission tag in the top-left corner
-        bw = 24 + 10.5 * len(badge)
+        bw = 30 + 11.2 * len(badge)
         a(f'<rect x="40" y="28" width="{bw:.0f}" height="36" rx="18" fill="#fff" {S} stroke-width="3"/>')
         a(f'<text x="{40+bw/2:.0f}" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">{badge}</text>')
     assert y < H - 38, f'story too long ({y})'
@@ -483,3 +483,29 @@ def cratered_globe(a, uid, cx, cy, R, lat0, lon0, body_km, named=(), n=700, seed
         a('</g>')
     a(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" {S} stroke-width="{5*sw:.2f}"/>')
     return pr
+
+
+def zeytin_loaf(a, uid, transform):
+    """Zeytin at home, no suit, in the 'loaf' pose from the photo: white chest and
+    paws, a black patch on the back, long fur. Origin at the bottom centre."""
+    body = 'M -165,0 C -175,-95 -105,-160 0,-160 C 105,-160 175,-105 165,0 Z'
+    a(f'<g transform="{transform}">')
+    a(f'<defs><clipPath id="lb{uid}"><path d="{body}"/></clipPath></defs>')
+    a(f'<path d="{body}" fill="#fff" {S} stroke-width="4.5"/>')
+    a(f'<g clip-path="url(#lb{uid})">')
+    a('<path d="M -200,-170 L -60,-170 C -80,-110 -95,-40 -80,10 L -200,10 Z" fill="#000"/>')   # black patch on the back
+    a('</g>')
+    # fluffy white chest ruff
+    d = 'M -70,-120'
+    for k in range(8):
+        d += f' q 9,{14 if k % 2 else 22} 18,{6 if k % 2 else 10}'
+    a(f'<path d="{d}" fill="none" {S} stroke-width="2.5"/>')
+    for x in (-40, -10, 20, 50):
+        a(f'<path d="M {x},-70 q 6,12 0,24" fill="none" {S} stroke-width="2"/>')
+    # front paws tucked in front
+    for x in (-38, 38):
+        a(f'<ellipse cx="{x}" cy="-12" rx="34" ry="17" fill="#fff" {S} stroke-width="4"/>')
+        for t in (-12, 0, 12):
+            a(f'<line x1="{x + t}" y1="-2" x2="{x + t}" y2="-10" {S} stroke-width="2"/>')
+    zeytin_head(a, uid, 'translate(0,-200) scale(0.72)', sw=1.3)
+    a('</g>')

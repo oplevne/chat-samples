@@ -90,6 +90,6 @@
 <text x="425.0" y="889" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">465°C — hotter than Mercury!</text>
 <text x="425.0" y="928" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">Venus also spins backward, and one slow turn takes 243 Earth</text>
 <text x="425.0" y="959" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">days, longer than its 225-day year.</text>
-<rect x="40" y="28" width="308" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
-<text x="194" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">108 million km from the Sun</text>
+<rect x="40" y="28" width="332" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
+<text x="206" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">108 million km from the Sun</text>
 </svg>

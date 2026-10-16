@@ -1134,6 +1134,6 @@
 <text x="425.0" y="928" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">With no wind or rain to wipe them away, the footprints</text>
 <text x="425.0" y="959" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">astronauts left in 1969 can stay in the dust for millions of</text>
 <text x="425.0" y="990" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">years!</text>
-<rect x="40" y="28" width="244" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
-<text x="162" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">384,400 km from Earth</text>
+<rect x="40" y="28" width="265" height="36" rx="18" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
+<text x="173" y="52" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="18" fill="#000">384,400 km from Earth</text>
 </svg>
