@@ -68,6 +68,7 @@ T = 'font-family="DejaVu Sans" font-weight="bold" text-anchor="middle" stroke-li
 a(f'<text x="{FX:.1f}" y="215" font-size="150" fill="#ffd23f" stroke="#3a1b00" stroke-width="12" {T}>ZEYTIN</text>')
 a(f'<text x="{FX:.1f}" y="315" font-size="82" fill="#ffffff" stroke="#3a1b00" stroke-width="9" {T}>IN SPACE</text>')
 a(f'<text x="{FX:.1f}" y="375" font-size="31" fill="#bfe3ff" {T.replace("font-weight=\"bold\" ", "")}>A Coloring Journey Through the Solar System</text>')
+a(f'<text x="{FX:.1f}" y="432" font-size="34" fill="#ffffff" {T}>by Olcay Plevne</text>')
 
 # ------------------------------------------------------------------- back ----
 BX = BACK_X0 + TRIM_W/2

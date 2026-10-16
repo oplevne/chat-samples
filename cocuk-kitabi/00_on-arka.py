@@ -11,7 +11,8 @@ for sx, sy in ((180, 600), (680, 620), (300, 1000), (560, 980)):
 a(f'<text x="{W/2}" y="220" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="92" fill="#fff" stroke="#000" stroke-width="3.2" stroke-linejoin="round">ZEYTIN</text>')
 a(f'<text x="{W/2}" y="310" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="60" fill="#fff" stroke="#000" stroke-width="2.6" stroke-linejoin="round">IN SPACE</text>')
 a(f'<text x="{W/2}" y="370" text-anchor="middle" font-family="DejaVu Sans" font-size="26" fill="#000">A Coloring Journey Through the Solar System</text>')
-zeytin_body(a, 'title', 'translate(425,800) scale(1.25)')
+a(f'<text x="{W/2}" y="420" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="28" fill="#000">by Olcay Plevne</text>')
+zeytin_body(a, 'title', 'translate(440,850) scale(1.2)')
 shuttle_side(a, 'translate(130,930) rotate(-6) scale(0.55)', uid='title')
 save(o, 'sayfalar/00a-baslik.svg')
 
@@ -27,6 +28,7 @@ for sx, sy, r in ((150, 150, 20), (700, 140, 24), (420, 110, 14), (170, 760, 16)
 note = ["Tip: colored pencils and crayons work best;", "markers may show through the paper."]
 for i, line in enumerate(note):
     a(f'<text x="{W/2}" y="{880 + i*30}" text-anchor="middle" font-family="DejaVu Sans" font-size="19" fill="#000">{line}</text>')
+a(f'<text x="{W/2}" y="1030" text-anchor="middle" font-family="DejaVu Sans" font-size="16" fill="#000">Text and illustrations \u00a9 2026 Olcay Plevne. All rights reserved.</text>')
 save(o, 'sayfalar/00b-sahip.svg')
 
 # ------------------------------------------------------ design a planet ----
