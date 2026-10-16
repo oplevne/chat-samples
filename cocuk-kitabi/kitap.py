@@ -273,8 +273,8 @@ def _texture_craters(seed=3, n=900):
     return out
 
 
-def _crater(a, pr, P, lat, lon, km, sw, dark=False, peak=False, w=2.6):
-    rho = km / 2 / 30.3
+def _crater(a, pr, P, lat, lon, km, sw, dark=False, peak=False, w=2.6, kpd=30.3):
+    rho = km / 2 / kpd
     ring = [pr(*_dest(lat, lon, rho, b)) for b in range(0, 360, 12)]
     a(f'<polygon points="{" ".join(P(x, y) for x, y, _ in ring)}" fill="#fff" {S} stroke-width="{w*sw:.2f}"/>')
     inner = [pr(*_dest(lat, lon, rho*0.75, b)) for b in range(190, 351, 16)]
@@ -401,3 +401,85 @@ def rock(a, x, y, r, seed=0, sw=3):
     pts.append((x + r, y))
     a(f'<polygon points="{" ".join(f"{px:.1f},{py:.1f}" for px, py in pts)}" fill="#fff" {S} stroke-width="{sw}"/>')
     a(f'<path d="M {x - r*0.2:.1f},{y - r*0.5:.1f} L {x + r*0.3:.1f},{y - r*0.15:.1f}" fill="none" {S} stroke-width="{sw*0.6:.1f}"/>')
+
+
+# ------------------------------------------------------- rocky globes ----
+
+def _ang(lat1, lon1, lat2, lon2):
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    d = math.sin(p1)*math.sin(p2) + math.cos(p1)*math.cos(p2)*math.cos(math.radians(lon1 - lon2))
+    return math.degrees(math.acos(max(-1, min(1, d))))
+
+
+def night_side(a, uid, cx, cy, R, pr_view, sun_lat, sun_lon, sw=1.0):
+    """Hatch the unlit hemisphere. The terminator is the great circle 90 deg from
+    the subsolar point; we sample it plus the dark part of the limb."""
+    sx, sy, _ = pr_view(sun_lat, sun_lon)
+    term = []
+    for b in range(0, 360, 3):
+        la, lo = _dest(sun_lat, sun_lon, 90, b)
+        x, y, v = pr_view(la, lo)
+        term.append((x, y, v))
+    # rotate the list so it starts at a hidden point, then keep the visible run
+    k0 = next((i for i, t in enumerate(term) if not t[2]), 0)
+    term = term[k0:] + term[:k0]
+    vis = [(x, y) for x, y, v in term if v]
+    if not vis:
+        return
+    a0 = math.atan2(vis[-1][1], vis[-1][0]); a1 = math.atan2(vis[0][1], vis[0][0])
+    # walk the limb from the end of the terminator back to its start on the dark side
+    sun_ang = math.atan2(sy, sx)
+    def arc(d):
+        span = (a1 - a0) % (2*math.pi) if d > 0 else -((a0 - a1) % (2*math.pi))
+        return [(math.cos(a0 + span*k/40), math.sin(a0 + span*k/40)) for k in range(41)]
+    cand = [arc(1), arc(-1)]
+    mid = lambda c: c[20]
+    limb = min(cand, key=lambda c: math.cos(math.atan2(mid(c)[1], mid(c)[0]) - sun_ang))
+    pts = vis + limb
+    a(f'<defs><pattern id="hatch{uid}" width="{9*sw:.1f}" height="{9*sw:.1f}" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
+      f'<line x1="0" y1="0" x2="0" y2="{9*sw:.1f}" stroke="#000" stroke-width="{1.6*sw:.2f}"/></pattern></defs>')
+    a(f'<polygon points="{" ".join(f"{cx+R*x:.1f},{cy+R*y:.1f}" for x, y in pts)}" fill="url(#hatch{uid})" stroke="#000" stroke-width="{2.5*sw:.2f}"/>')
+
+
+def cratered_globe(a, uid, cx, cy, R, lat0, lon0, body_km, named=(), n=700, seed=1, sw=1.0,
+                   sun=None, basins=(), min_px=2.5, max_km=None, min_km=None, smooth=()):
+    """A heavily cratered world: representative craters (power-law sizes) plus
+    named features at their real coordinates. named: (lat, lon, km, peak, dark)."""
+    import random
+    kpd = 2 * math.pi * body_km / 360
+    pr = ortho(lat0, lon0)
+    P = lambda x, y: f'{cx+R*x:.1f},{cy+R*y:.1f}'
+    a(f'<defs><clipPath id="g{uid}"><circle cx="{cx}" cy="{cy}" r="{R}"/></clipPath></defs>')
+    a(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="#fff" {S} stroke-width="{5*sw:.2f}"/>')
+    a(f'<g clip-path="url(#g{uid})">')
+    for lat, lon, km in basins:  # multi-ring impact basins
+        for f in (1.0, 0.72, 0.45):
+            ring = [pr(*_dest(lat, lon, km*f/2/kpd, b)) for b in range(0, 360, 4)]
+            runs, cur = [], []
+            for x, y, v in ring + ring[:1]:
+                if v: cur.append(P(x, y))
+                elif cur: runs.append(cur); cur = []
+            if cur: runs.append(cur)
+            for r_ in runs:
+                a(f'<polyline points="{" ".join(r_)}" fill="none" {S} stroke-width="{(3 if f == 1 else 2)*sw:.2f}" {"" if f == 1 else f"stroke-dasharray={chr(34)}{8*sw:.0f} {6*sw:.0f}{chr(34)}"}/>')
+    rnd = random.Random(seed)
+    max_km = max_km or body_km * 0.06
+    for _ in range(n):
+        lat = math.degrees(math.asin(rnd.uniform(-1, 1))); lon = rnd.uniform(-180, 180)
+        km = (min_km or body_km * 0.008) * (1 - rnd.random()) ** (-1 / 1.6)
+        if km > max_km or not pr(lat, lon)[2] or R * km / (2*body_km) < min_px / 2:
+            continue
+        # smooth volcanic plains (e.g. basin interiors) are much less cratered
+        if any(_ang(lat, lon, sl, so) < sr for sl, so, sr in smooth) and rnd.random() > 0.15:
+            continue
+        _crater(a, pr, P, lat, lon, km, sw, w=1.8, kpd=kpd)
+    for lat, lon, km, peak, dark in named:
+        if pr(lat, lon)[2]:
+            _crater(a, pr, P, lat, lon, km, sw, dark=dark, peak=peak, kpd=kpd)
+    a('</g>')
+    if sun:
+        a(f'<g clip-path="url(#g{uid})">')
+        night_side(a, uid, cx, cy, R, pr, *sun, sw=sw)
+        a('</g>')
+    a(f'<circle cx="{cx}" cy="{cy}" r="{R}" fill="none" {S} stroke-width="{5*sw:.2f}"/>')
+    return pr
