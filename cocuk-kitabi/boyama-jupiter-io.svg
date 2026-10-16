@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 1100" width="850" height="1100">
 <rect width="850" height="1100" fill="#fff"/>
 <defs><clipPath id="jc"><circle cx="300" cy="620" r="228"/></clipPath></defs>
+<g transform="translate(127.5,0) scale(0.7)">
 <polygon points="80.0,64.0 86.9,80.5 104.7,82.0 91.1,93.6 95.3,111.0 80.0,101.7 64.7,111.0 68.9,93.6 55.3,82.0 73.1,80.5" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5"/>
 <polygon points="250.0,52.0 254.8,63.4 267.1,64.4 257.7,72.5 260.6,84.6 250.0,78.1 239.4,84.6 242.3,72.5 232.9,64.4 245.2,63.4" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5"/>
 <polygon points="410.0,120.0 417.9,139.1 438.5,140.7 422.8,154.2 427.6,174.3 410.0,163.5 392.4,174.3 397.2,154.2 381.5,140.7 402.1,139.1" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5"/>
@@ -97,5 +98,14 @@
 <path d="M 70,-12 L 92,-9 L 92,9 L 70,12 Z" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
 <line x1="81" y1="-10.5" x2="81" y2="10.5" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5"/>
 </g>
-<text x="425.0" y="1010" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="48" fill="#fff" stroke="#000" stroke-width="2.5" stroke-linejoin="round">Io'nun Elektrik Köprüsü</text>
+</g>
+<text x="425.0" y="712" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="40" fill="#fff" stroke="#000" stroke-width="2.2" stroke-linejoin="round">The Magnetic Dance</text>
+<text x="425.0" y="768" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">Every 42 hours, little Io dances once around giant Jupiter,</text>
+<text x="425.0" y="799" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">always facing its partner and holding hands through an</text>
+<text x="425.0" y="830" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">invisible magnetic bond.</text>
+<text x="425.0" y="869" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">As Jupiter spins, its magnetic field sweeps past Io, and an</text>
+<text x="425.0" y="900" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">electric current of about a million amperes flows along</text>
+<text x="425.0" y="931" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">their bond like a sparkling ribbon.</text>
+<text x="425.0" y="970" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">Where the ribbon touches Jupiter's poles, glowing auroras</text>
+<text x="425.0" y="1001" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">light up — the shining footprints of Io's dance!</text>
 </svg>

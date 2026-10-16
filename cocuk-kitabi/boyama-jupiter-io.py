@@ -8,6 +8,9 @@ a=o.append
 a(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">')
 a(f'<rect width="{W}" height="{H}" fill="#fff"/>')
 a(f'<defs><clipPath id="jc"><circle cx="{JX}" cy="{JY}" r="{JR-2}"/></clipPath></defs>')
+# illustration area is scaled up to leave room for the story text below
+SC=0.7
+a(f'<g transform="translate({W*(1-SC)/2:.1f},0) scale({SC})">')
 
 def star(cx,cy,r,sw=3.5):
     pts=[]
@@ -109,7 +112,19 @@ a(f'<path d="M 70,-12 L 92,-9 L 92,9 L 70,12 Z" fill="#fff" {S} stroke-width="3"
 a(f'<line x1="81" y1="-10.5" x2="81" y2="10.5" {S} stroke-width="2.5"/>')
 a('</g>')
 
-# title
-a(f'<text x="{W/2}" y="1010" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="48" fill="#fff" stroke="#000" stroke-width="2.5" stroke-linejoin="round">Io\'nun Elektrik Köprüsü</text>')
+a('</g>')
+
+# title (outlined, colorable) and story
+a(f'<text x="{W/2}" y="712" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="40" fill="#fff" stroke="#000" stroke-width="2.2" stroke-linejoin="round">The Magnetic Dance</text>')
+import textwrap
+story=["Every 42 hours, little Io dances once around giant Jupiter, always facing its partner and holding hands through an invisible magnetic bond.",
+       "As Jupiter spins, its magnetic field sweeps past Io, and an electric current of about a million amperes flows along their bond like a sparkling ribbon.",
+       "Where the ribbon touches Jupiter's poles, glowing auroras light up — the shining footprints of Io's dance!"]
+y=768
+for para in story:
+    for line in textwrap.wrap(para,60):
+        a(f'<text x="{W/2}" y="{y}" text-anchor="middle" font-family="DejaVu Sans" font-size="23" fill="#000">{line}</text>')
+        y+=31
+    y+=8
 a('</svg>')
 open(sys.argv[1],'w').write('\n'.join(o))
