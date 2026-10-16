@@ -24,7 +24,7 @@ a(f'<ellipse cx="498" cy="610" rx="11" ry="15" transform="rotate(-25 498 610)" f
 a(f'<path d="M 506,596 Q 515,585 525,590 Q 518,600 506,596 Z" fill="#fff" {S} stroke-width="2.5"/>')
 # helmet glass + head
 a(f'<circle cx="{HX}" cy="{HY}" r="{HR}" fill="#fff" {S} stroke-width="5"/>')
-zeytin_head(a, 'big', f'translate({HX},{HY+25})')
+zeytin_head(a, 'big', f'translate({HX},{HY+28}) scale(0.92)')
 # glare strip
 def arc(r, a0, a1):
     return (HX + r*math.cos(math.radians(a0)), HY + r*math.sin(math.radians(a0)),

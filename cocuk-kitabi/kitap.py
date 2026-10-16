@@ -31,43 +31,52 @@ def _fluffy_head_path(rx=125, ry=105, tufts=22):
 
 
 def zeytin_head(a, uid, transform, sw=1.0):
-    """Zeytin: long-haired, mostly white, black ear + head patch, pirate eye patch.
-    Drawn around (0,0); sw scales stroke widths for small sizes."""
+    """Zeytin, after the real cat: long-haired, white face/chest/ruff, black ears and
+    black cap that wraps around both eyes (down to the cheek on the viewer's left),
+    white blaze between the eyes, pink nose, one big round pale-blue eye, and a
+    pirate patch over the closed eye. Drawn around (0,0); sw scales strokes."""
     st = lambda w: f'{S} stroke-width="{w*sw:.2f}"'
-    head = _fluffy_head_path()
+    head = _fluffy_head_path(rx=130, ry=108, tufts=24)
     a(f'<g transform="{transform}">')
     a(f'<defs><clipPath id="hc{uid}"><path d="{head}"/></clipPath></defs>')
-    # ears (behind head): left white, right black
-    for sg, fill in ((-1, '#fff'), (1, '#000')):
-        a(f'<path d="M {sg*118},-40 Q {sg*118},-130 {sg*100},-182 Q {sg*60},-150 {sg*30},-98 Z" fill="{fill}" {st(4.5)}/>')
-        a(f'<path d="M {sg*100},-62 Q {sg*102},-120 {sg*96},-152 Q {sg*70},-128 {sg*55},-95 Z" fill="#fff" {st(3)}/>')
-        for dx, dy in ((88, -110), (78, -95)):
-            a(f'<path d="M {sg*dx},{dy} q {sg*-6},-14 {sg*-2},-26" fill="none" {st(2.5)}/>')
+    # big pointed black ears with white inner tufts
+    for sg in (-1, 1):
+        a(f'<path d="M {sg*128},-30 Q {sg*130},-140 {sg*112},-195 Q {sg*65},-160 {sg*25},-100 Z" fill="#000" {st(4.5)}/>')
+        for x0, y0, x1, y1 in ((92, -70, 100, -130), (80, -80, 92, -145), (68, -88, 82, -125)):
+            a(f'<path d="M {sg*x0},{y0} Q {sg*(x0+10)},{(y0+y1)/2} {sg*x1},{y1}" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="{2.5*sw:.2f}"/>')
     a(f'<path d="{head}" fill="#fff" {st(4.5)}/>')
     a(f'<g clip-path="url(#hc{uid})">')
-    # black fur patch over the right side of the forehead
-    a('<path d="M 10,-120 C 30,-60 70,-35 115,-40 C 150,-45 150,-120 120,-140 Z" fill="#000"/>')
-    # pirate patch strap
-    a(f'<path d="M -130,-22 L -70,-2" fill="none" {st(8)}/>')
-    a(f'<path d="M -32,-12 L 40,-130" fill="none" {st(8)}/>')
+    # black cap: over the head, around both eyes, down to the cheek on the viewer's left,
+    # leaving a white blaze that narrows to a point on the forehead
+    a('<path d="M -160,60 L -160,-160 L 160,-160 L 160,22 '
+      'C 130,30 100,44 76,42 C 48,40 26,30 20,4 '
+      'C 16,-30 12,-62 0,-92 '
+      'C -12,-62 -16,-30 -20,4 '
+      'C -24,30 -40,50 -74,56 C -104,62 -140,60 -160,58 Z" fill="#000"/>')
     a('</g>')
-    # cheek fur strokes
+    # white chest/cheek fur strokes
+    for sg in (1,):
+        a(f'<path d="M {sg*116},48 q {sg*-12},10 {sg*-6},26" fill="none" {st(2.5)}/>')
+    a(f'<path d="M -100,82 q 12,6 10,22 M 100,82 q -12,6 -10,22" fill="none" {st(2.5)}/>')
+    a(f'<path d="M -14,112 q 6,-12 0,-22 M 14,112 q -6,-12 0,-22" fill="none" {st(2.5)}/>')
+    # pirate patch over the closed eye (viewer's left), white-rimmed so it reads on black fur
+    a(f'<path d="M -150,-30 L -78,-6 M -30,-14 L 50,-150" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="{13*sw:.2f}"/>')
+    a(f'<path d="M -150,-30 L -78,-6 M -30,-14 L 50,-150" fill="none" stroke="#000" stroke-linecap="round" stroke-width="{7*sw:.2f}"/>')
+    a(f'<ellipse cx="-55" cy="6" rx="36" ry="31" fill="#000" stroke="#fff" stroke-width="{3*sw:.2f}"/>')
+    # big round open eye (viewer's right): pale blue in the colour version
+    a(f'<circle cx="55" cy="4" r="33" fill="#fff" {st(4)}/>')
+    a(f'<circle cx="55" cy="6" r="21" fill="none" {st(2.5)}/>')
+    a(f'<circle cx="65" cy="-6" r="8" fill="#fff" {st(2.5)}/>')
+    a(f'<circle cx="45" cy="17" r="4" fill="#fff" {st(2)}/>')
+    # pink nose, small mouth
+    a(f'<path d="M -12,46 Q 0,40 12,46 L 0,58 Z" fill="#fff" {st(3.5)}/>')
+    a(f'<path d="M 0,58 L 0,66 M -16,70 Q -8,77 0,66 Q 8,77 16,70" fill="none" {st(3.5)}/>')
+    # long whiskers, white-haloed so they show over black fur too
     for sg in (-1, 1):
-        a(f'<path d="M {sg*112},20 q {sg*-12},10 {sg*-6},26" fill="none" {st(2.5)}/>')
-        a(f'<path d="M {sg*100},55 q {sg*-12},8 {sg*-8},22" fill="none" {st(2.5)}/>')
-    a(f'<path d="M -12,108 q 6,-12 0,-22 M 12,108 q -6,-12 0,-22" fill="none" {st(2.5)}/>')
-    # pirate eye patch (cat's right eye, viewer's left)
-    a(f'<ellipse cx="-50" cy="12" rx="34" ry="30" fill="#000" {st(3)}/>')
-    # open eye (viewer's right) — olive green in the colour version
-    a(f'<ellipse cx="50" cy="12" rx="26" ry="31" fill="#fff" {st(4)}/>')
-    a('<ellipse cx="52" cy="15" rx="13" ry="22" fill="#000"/>')
-    a('<circle cx="58" cy="2" r="6" fill="#fff"/>')
-    # nose, mouth, whiskers
-    a(f'<path d="M -11,38 L 11,38 L 0,50 Z" fill="#fff" {st(3.5)}/>')
-    a(f'<path d="M 0,50 L 0,58 M -17,61 Q -8,70 0,58 Q 8,70 17,61" fill="none" {st(3.5)}/>')
-    for sg in (-1, 1):
-        for y0, y1 in ((48, 30), (56, 58), (64, 86)):
-            a(f'<path d="M {sg*38},{y0} Q {sg*90},{(y0+y1)/2-4} {sg*140},{y1}" fill="none" {st(2.5)}/>')
+        for y0, y1 in ((56, 34), (63, 64), (70, 94)):
+            d = f'M {sg*36},{y0} Q {sg*95},{(y0+y1)/2-4} {sg*155},{y1}'
+            a(f'<path d="{d}" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="{5.5*sw:.2f}"/>')
+            a(f'<path d="{d}" fill="none" {st(2.5)}/>')
     a('</g>')
 
 
