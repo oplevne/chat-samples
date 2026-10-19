@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 1100" width="850" height="1100">
+<rect width="850" height="1100" fill="#fff"/>
+<rect x="120" y="230" width="610" height="420" rx="30" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="5"/>
+<text x="425.0" y="330" text-anchor="middle" font-family="DejaVu Sans" font-weight="bold" font-size="46" fill="#fff" stroke="#000" stroke-width="2.2" stroke-linejoin="round">This book belongs to</text>
+<line x1="190" y1="480" x2="660" y2="480" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
+<text x="425.0" y="560" text-anchor="middle" font-family="DejaVu Sans" font-size="22" fill="#000">Space cadet, age</text>
+<line x1="355" y1="600" x2="495" y2="600" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3"/>
+<polygon points="150.0,130.0 155.3,142.7 169.0,143.8 158.6,152.8 161.8,166.2 150.0,159.0 138.2,166.2 141.4,152.8 131.0,143.8 144.7,142.7" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5"/>
+<polygon points="700.0,116.0 706.3,131.3 722.8,132.6 710.3,143.3 714.1,159.4 700.0,150.8 685.9,159.4 689.7,143.3 677.2,132.6 693.7,131.3" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5"/>
+<polygon points="420.0,96.0 423.7,104.9 433.3,105.7 426.0,111.9 428.2,121.3 420.0,116.3 411.8,121.3 414.0,111.9 406.7,105.7 416.3,104.9" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5"/>
+<polygon points="170.0,744.0 174.2,754.2 185.2,755.1 176.8,762.2 179.4,772.9 170.0,767.2 160.6,772.9 163.2,762.2 154.8,755.1 165.8,754.2" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5"/>
+<polygon points="690.0,760.0 695.3,772.7 709.0,773.8 698.6,782.8 701.8,796.2 690.0,789.0 678.2,796.2 681.4,782.8 671.0,773.8 684.7,772.7" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5"/>
+<text x="425.0" y="880" text-anchor="middle" font-family="DejaVu Sans" font-size="19" fill="#000">Tip: colored pencils and crayons work best;</text>
+<text x="425.0" y="910" text-anchor="middle" font-family="DejaVu Sans" font-size="19" fill="#000">markers may show through the paper.</text>
+<text x="425.0" y="1030" text-anchor="middle" font-family="DejaVu Sans" font-size="16" fill="#000">Text and illustrations © 2026 Olcay Plevne. All rights reserved.</text>
+</svg>
